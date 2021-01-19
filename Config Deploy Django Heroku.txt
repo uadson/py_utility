@@ -1,0 +1,92 @@
+## Configurações para Deploy de um projeto em Django no Heroku
+
+### Essas configurações são úteis quando o deploy parte de um 
+repositório no GitHub
+
+
+1. Criar um repositório para o projeto no GitHub e cloná-lo para sua máquina. De preferência utilizando o GIT.
+
+
+2. Criar um app no Heroku.
+
+# criando o projeto django:
+
+3. Baixar as bibliotecas que serão utilizadas:
+
+
+		pip install django
+
+		pip install dj-database-url
+
+		pip install gunicorn
+
+		pip install psycopg2_binary
+
+		pip install whitenoise
+
+
+# após criar o projeto em Django:
+
+4. No módulo settings.py realizar as seguintes alterações:
+
+
+		a) import dj_database_url
+
+
+		b)  DEBUG = False
+
+			ALLOWED_HOSTS = [
+				'nome_app_heroku.herokuapp.com', 
+				'127.0.0.1'
+			]
+
+
+		c MIDDLEWARE = [
+			'django.middleware.security.SecurityMiddleware',
+
+			ADICIONAR ESTA LINHA:
+
+			-> 'whitenoise.middleware.WhiteNoiseMiddleware', <-
+			...
+
+		]
+
+
+		d) DATABASES = {
+   			 'default': dj_database_url.config(
+       			 default=f'sqlite:///{BASE_DIR}/db.sqlite3')
+		}
+
+
+		# incluir essa linha ao final:
+
+		e) 	STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+
+5. Criar um arquivo e nomeá-lo como Procfile (sem extensão) e adicionar as seguintes linhas:
+
+
+		release: python manage.py migrate
+		web: gunicorn <nome_do_projeto_django>.wsgi --log-file -
+
+
+6. Criar um arquivo e nomeá-lo como runtime.txt e adicionar a seguinte linha:
+
+		python-3.9.0 <ou outra versão>
+
+
+7. Comandos:
+
+
+		criando requirements.txt:
+		pip freeze > requirements.txt
+
+
+		coletando as staticfiles:
+		python manage.py collectstatic
+
+
+		realizando as alterações na aplicação
+		python manage.py migrate
+		
+8. Após realizar o commit do projeto para o GitHub, basta ir para deploy no Heroku.

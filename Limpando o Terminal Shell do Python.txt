@@ -1,0 +1,16 @@
+For Linux
+
+>> import os
+
+>> clear = lambda: os.system('clear')
+
+>> clear()
+
+
+For Windows
+
+>> import os
+
+>> clear = lambda: os.system('cls')
+
+>> clear()
